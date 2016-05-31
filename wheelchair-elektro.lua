@@ -176,7 +176,7 @@ function node_function (node, result)
   end
   -- no kerbheight set or not readable
   if kerbtype and kerbtype ~= "" then
-      if kerbtype == "flush" or kerbtype == "lowered" then
+      if kerbtype == "flush" or kerbtype == "lowered" or kerbtype == "no" then
           result.barrier = false
       else
           result.barrier = true
