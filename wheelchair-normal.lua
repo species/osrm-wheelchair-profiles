@@ -260,6 +260,8 @@ function way_function (way, result)
   local junction = way:get_value_by_key("junction")
   local onewayClass = way:get_value_by_key("oneway")
   local oneway_cycle = way:get_value_by_key("oneway:bicycle")
+  local oneway_foot = way:get_value_by_key("oneway:foot")
+  local oneway_wheelchair = way:get_value_by_key("oneway:wheelchair")
   local cycleway = way:get_value_by_key("cycleway")
   local cycleway_right = way:get_value_by_key("cycleway:right")
   local cycleway_left = way:get_value_by_key("cycleway:left")
@@ -333,12 +335,28 @@ function way_function (way, result)
   end
 
   -- oneway
-  if (onewayClass == "yes" or onewayClass == "1" or onewayClass == "true" ) and (highway ~= "cycleway" or (cycleway and cycleway ~= "no") ) then
-    result.backward_mode = 0
-  elseif onewayClass == "no" or onewayClass == "0" or onewayClass == "false" then
-    -- nothing to do
-  elseif onewayClass == "-1" and highway ~= "cycleway" then
-    result.forward_mode = 0
+  if onewayClass and onewayClass ~= "" then
+    if oneway_wheelchair and oneway_wheelchair == "no"  then 
+      -- do nothing
+    elseif oneway_foot and oneway_foot == "no" then
+      -- do nothing
+    elseif highway == "cycleway" and foot and (foot == "yes" or foot == "designated" or foot == "permissive" ) then 
+      -- do nothing
+    elseif sidewalk and (sidewalk == "both" or sidewalk == "left" or sidewalk == "right") then
+      -- do nothing
+    elseif cycleway and (cycleway == "opposite" or cycleway == "opposite_lane" or cycleway == "opposite_track" ) then
+      -- do nothing
+    elseif oneway_cycle and oneway_cycle == "no" then
+      -- do nothing
+
+    else -- catch all remaining-block
+      if onewayClass == "yes" or onewayClass == "1" or onewayClass == "true" then
+        result.backward_mode = 0
+      elseif onewayClass == "-1" then
+        result.forward_mode = 0
+      end
+    end
+
   end
 
   -- surfaces
