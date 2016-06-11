@@ -337,39 +337,41 @@ function way_function (way, result)
     end
   end
 
-  -- set speed to 0 for too much inclined
-  if incline and incline ~= "" then
-      if incline:match("^-?[0-9.]+%s?%%?$") then
-          lincline = tonumber(incline:match("[0-9.]+"))
-          if lincline ~= nil and lincline > maxincline then
-              result.forward_speed = 0
-              result.backward_speed = 0
+  if not wheelchair or not ( wheelchair and (wheelchair == "yes" or wheelchair == "designated") ) then
+      -- set speed to 0 for too much inclined
+      if incline and incline ~= "" then
+          if incline:match("^-?[0-9.]+%s?%%?$") then
+              lincline = tonumber(incline:match("[0-9.]+"))
+              if lincline ~= nil and lincline > maxincline then
+                  result.forward_speed = 0
+                  result.backward_speed = 0
+              end
           end
       end
-  end
-  if incline_across and incline_across ~= "" then
-      if incline_across:match("^-?[0-9.]+%s?%%?$") then
-          lincline = tonumber(incline_across:match("[0-9.]+"))
-          if lincline ~= nil and lincline > maxincline then
-              result.forward_speed = 0
-              result.backward_speed = 0
+      if incline_across and incline_across ~= "" then
+          if incline_across:match("^-?[0-9.]+%s?%%?$") then
+              lincline = tonumber(incline_across:match("[0-9.]+"))
+              if lincline ~= nil and lincline > maxincline then
+                  result.forward_speed = 0
+                  result.backward_speed = 0
+              end
           end
       end
-  end
 
-  -- set speed to 0 for too narrow:
-  if width and width ~= "" then
-      if width:match("^[0-9.]+%s?m?$") then
-          lwidth = tonumber(width:match("^[0-9.]+"))
-          if lwidth ~= nil and lwidth < minwidth then
-              result.forward_speed = 0
-              result.backward_speed = 0
-          end
-      elseif width:match("^[0-9.]+%s?cm$") then
-          lwidth = tonumber(width:match("^[0-9.]+"))
-          if lwidth ~= nil and lwidth < minwidth*100 then
-              result.forward_speed = 0
-              result.backward_speed = 0
+      -- set speed to 0 for too narrow:
+      if width and width ~= "" then
+          if width:match("^[0-9.]+%s?m?$") then
+              lwidth = tonumber(width:match("^[0-9.]+"))
+              if lwidth ~= nil and lwidth < minwidth then
+                  result.forward_speed = 0
+                  result.backward_speed = 0
+              end
+          elseif width:match("^[0-9.]+%s?cm$") then
+              lwidth = tonumber(width:match("^[0-9.]+"))
+              if lwidth ~= nil and lwidth < minwidth*100 then
+                  result.forward_speed = 0
+                  result.backward_speed = 0
+              end
           end
       end
   end
