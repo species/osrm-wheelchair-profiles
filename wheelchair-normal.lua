@@ -107,7 +107,7 @@ function node_function (node, result)
     result.traffic_lights = true
   end
   -- wheelchair tag overrides all
-  if wheelchair and wheelchair == "yes" then
+  if wheelchair and (wheelchair == "yes" or wheelchair == "designated" ) then
       result.barrier = false
       return 1
   end
