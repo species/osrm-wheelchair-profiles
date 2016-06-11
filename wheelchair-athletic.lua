@@ -107,11 +107,11 @@ function node_function (node, result)
     result.traffic_lights = true
   end
   -- wheelchair tag overrides all
-  if wheelchair and wheelchair == "yes" then
+  if wheelchair and (wheelchair == "yes" or wheelchair == "limited" or wheelchair == "designated" ) then
       result.barrier = false
       return 1
   end
-  if wheelchair and wheelchair ~= "" and barrier and barrier ~= "" and barrier ~= "no" then -- all other values (limited is only for wheelchair with help) on barriers
+  if wheelchair and wheelchair ~= "" and barrier and barrier ~= "" and barrier ~= "no" then -- all other values on barriers
       result.barrier = true
       return 1
   end
@@ -240,11 +240,11 @@ function way_function (way, result)
       return
   end
 
-  if wheelchair and (wheelchair == "no" or wheelchair == "limited") then
+  if wheelchair and wheelchair == "no" then
       return
   end
 
-  if highway and highway == "steps" and not ( (wheelchair_ramp and  wheelchair_ramp == "yes") or (wheelchair and wheelchair == "yes") ) then
+  if highway and highway == "steps" and not ( (wheelchair_ramp and  wheelchair_ramp == "yes") or (wheelchair and (wheelchair == "yes" or wheelchair == "limited") ) ) then
       return
   end
 
@@ -368,7 +368,7 @@ function way_function (way, result)
     end
   end
 
-  if not wheelchair or not ( wheelchair and (wheelchair == "yes" or wheelchair == "designated") ) then
+  if not wheelchair or not ( wheelchair and (wheelchair == "yes" or wheelchair == "designated" or wheelchair == "limited") ) then
       -- set speed to 0 for too much inclined
       if incline and incline ~= "" then
           if incline:match("^-?[0-9.]+%s?%%?$") then
