@@ -33,7 +33,7 @@ speeds = {
   ["service"] = walking_speed*0.75,
   ["track"] = walking_speed,
   ["path"] = walking_speed,
-  ["steps"] = 0,
+  ["steps"] = walking_speed*0.1, -- have to take it if it has a ramp
   ["pedestrian"] = walking_speed,
   ["platform"] = walking_speed,
   ["footway"] = walking_speed,
@@ -78,6 +78,8 @@ u_turn_penalty           = 2
 use_turn_restrictions    = false
 local fallback_names     = true
 
+local obey_oneway        = true
+
 --modes
 local mode_normal = 1
 local mode_ferry = 2
@@ -97,6 +99,7 @@ function node_function (node, result)
   local barrier = node:get_value_by_key("barrier")
   local access = find_access_tag(node, access_tags_hierachy)
   local highway = node:get_value_by_key("highway")
+  local wheelchair_ramp = node:get_value_by_key("ramp:wheelchair")
   local crossing = node:get_value_by_key("crossing")
 
   -- flag node if it carries a traffic light
@@ -115,7 +118,7 @@ function node_function (node, result)
 
   
   -- if step tagged on a node, they are a barrier
-  if highway and highway == "steps" then
+  if highway and highway == "steps" and not (wheelchair_ramp and wheelchair_ramp == "yes") then
     result.barrier = true
     return 1
   end
@@ -207,6 +210,7 @@ end
 function way_function (way, result)
   -- initial routability check, filters out buildings, boundaries, etc
   local highway = way:get_value_by_key("highway")
+  local wheelchair_ramp = way:get_value_by_key("ramp:wheelchair")
   local leisure = way:get_value_by_key("leisure")
   local route = way:get_value_by_key("route")
   local man_made = way:get_value_by_key("man_made")
@@ -240,6 +244,10 @@ function way_function (way, result)
       return
   end
 
+  if highway and highway == "steps" and not ( (wheelchair_ramp and  wheelchair_ramp == "yes") or (wheelchair and wheelchair == "yes") ) then
+      return
+  end
+
   -- access
   local access = find_access_tag(way, access_tags_hierachy)
   if access_tag_blacklist[access] then
@@ -250,7 +258,11 @@ function way_function (way, result)
   local footway_type = way:get_value_by_key("footway")
   local ref = way:get_value_by_key("ref")
   local junction = way:get_value_by_key("junction")
-  local onewayClass = way:get_value_by_key("oneway:foot")
+  local onewayClass = way:get_value_by_key("oneway")
+  local oneway_cycle = way:get_value_by_key("oneway:bicycle")
+  local cycleway = way:get_value_by_key("cycleway")
+  local cycleway_right = way:get_value_by_key("cycleway:right")
+  local cycleway_left = way:get_value_by_key("cycleway:left")
   local duration  = way:get_value_by_key("duration")
   local service  = way:get_value_by_key("service")
   local area = way:get_value_by_key("area")
@@ -321,11 +333,11 @@ function way_function (way, result)
   end
 
   -- oneway
-  if onewayClass == "yes" or onewayClass == "1" or onewayClass == "true" then
+  if (onewayClass == "yes" or onewayClass == "1" or onewayClass == "true" ) and (highway ~= "cycleway" or (cycleway and cycleway ~= "no") ) then
     result.backward_mode = 0
   elseif onewayClass == "no" or onewayClass == "0" or onewayClass == "false" then
     -- nothing to do
-  elseif onewayClass == "-1" then
+  elseif onewayClass == "-1" and highway ~= "cycleway" then
     result.forward_mode = 0
   end
 
@@ -347,6 +359,10 @@ function way_function (way, result)
                   result.forward_speed = 0
                   result.backward_speed = 0
               end
+          end
+          if (incline == "up" or incline == "down") and not (wheelchair_ramp and wheelchair_ramp == "yes") then -- is only set when not known exactly - and most people only recognize or see inclines > 3% as relevant
+              result.forward_speed = 0
+              result.backward_speed = 0
           end
       end
       if incline_across and incline_across ~= "" then
