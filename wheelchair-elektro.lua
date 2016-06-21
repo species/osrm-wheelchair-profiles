@@ -101,6 +101,7 @@ function node_function (node, result)
   local highway = node:get_value_by_key("highway")
   local wheelchair_ramp = node:get_value_by_key("ramp:wheelchair")
   local crossing = node:get_value_by_key("crossing")
+  local humps = node:get_value_by_key("traffic_calming")
 
   -- flag node if it carries a traffic light
   if highway and highway == "traffic_signals" then
@@ -111,7 +112,7 @@ function node_function (node, result)
       result.barrier = false
       return 1
   end
-  if wheelchair and wheelchair ~= "" and barrier and barrier ~= "" and barrier ~= "no" then -- all other values (limited is only for wheelchair with help) on barriers
+  if wheelchair and wheelchair ~= "" and (barrier and barrier ~= "" and barrier ~= "no") or (humps and humps ~= "" and humps ~= "no") then -- all other values (limited is only for wheelchair with help) on barriers
       result.barrier = true
       return 1
   end
