@@ -63,10 +63,25 @@ surface_speeds = {
   ["gravel"] =        walking_speed*0.05,
   ["pebblestone"] =   0,
   ["cobblestone"] =   walking_speed*0.5,
+  ["cobblestone:flattened"] =   walking_speed*0.5,
+  ["paving_stones"] =   walking_speed*0.9,
   ["mud"] =           0,
   ["sand"] =          0,
   ["grass"] =         0,
+  ["ground"] =         0,
+  ["earth"] =         0,
+  ["grass_paver"] =         0,
   ["unpaved"] =       walking_speed*0.1
+}
+
+smoothness_speed_factor = {
+  ["excellent"] =         1,
+  ["good"] =         1,
+  ["intermediate"] =         0.5,
+  ["bad"] =         0,
+  ["very_bad"] =         0,
+  ["horrible"] =         0,
+  ["impassable"] =         0,
 }
 
 leisure_speeds = {
@@ -101,6 +116,7 @@ function node_function (node, result)
   local highway = node:get_value_by_key("highway")
   local wheelchair_ramp = node:get_value_by_key("ramp:wheelchair")
   local crossing = node:get_value_by_key("crossing")
+  local humps = node:get_value_by_key("traffic_calming")
 
   -- flag node if it carries a traffic light
   if highway and highway == "traffic_signals" then
@@ -111,7 +127,7 @@ function node_function (node, result)
       result.barrier = false
       return 1
   end
-  if wheelchair and wheelchair ~= "" and barrier and barrier ~= "" and barrier ~= "no" then -- all other values (limited is only for wheelchair with help) on barriers
+  if wheelchair and wheelchair ~= "" and (barrier and barrier ~= "" and barrier ~= "no") or (humps and humps ~= "" and humps ~= "no") then -- all other values (limited is only for wheelchair with help) on barriers
       result.barrier = true
       return 1
   end
