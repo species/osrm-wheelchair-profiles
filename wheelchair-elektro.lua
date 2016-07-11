@@ -50,7 +50,7 @@ platform_speeds = {
 }
 
 amenity_speeds = {
-  ["parking"] = walking_speed,
+  ["parking"] = 0,
   ["parking_entrance"] = walking_speed
 }
 
