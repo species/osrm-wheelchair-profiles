@@ -67,9 +67,9 @@ surface_speeds = {
   ["mud"] =           0,
   ["sand"] =          0,
   ["grass"] =         0,
-  ["ground"] =         0,
+  ["ground"] =        0,
   ["earth"] =         0,
-  ["grass_paver"] =         0,
+  ["grass_paver"] =   0,
   ["unpaved"] =       walking_speed*0.2
 }
 
