@@ -127,11 +127,14 @@ function node_function (node, result)
       result.barrier = false
       return 1
   end
-  if wheelchair and wheelchair ~= "" and (barrier and barrier ~= "" and barrier ~= "no") or (humps and humps ~= "" and humps ~= "no") then -- all other values (limited is only for wheelchair with help) on barriers
+  if wheelchair and wheelchair ~= "" and barrier and barrier ~= "" and barrier ~= "no" then -- all other values (limited is only for wheelchair with help) on barriers
       result.barrier = true
       return 1
   end
-
+  if wheelchair and wheelchair ~= "" and humps and humps ~= "" and humps ~= "no" then -- all other values (limited is only for wheelchair with help) on barriers
+      result.barrier = true
+      return 1
+  end
   
   -- if step tagged on a node, they are a barrier
   if highway and highway == "steps" and not (wheelchair_ramp and wheelchair_ramp == "yes") then
