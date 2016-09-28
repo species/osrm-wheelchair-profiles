@@ -40,6 +40,9 @@ speeds = {
   ["pier"] = walking_speed,
   ["default"] = walking_speed
 }
+railway_speeds = {
+  ["funicular"] = 0.1
+}
 
 route_speeds = {
   ["ferry"] = 5
@@ -289,6 +292,7 @@ function way_function (way, result)
   local area = way:get_value_by_key("area")
   local foot = way:get_value_by_key("foot")
   local surface = way:get_value_by_key("surface")
+  local smoothness = way:get_value_by_key("smoothness")
 
    -- name
   if ref and "" ~= ref and name and "" ~= name then
@@ -341,6 +345,10 @@ function way_function (way, result)
     -- regular ways
     result.forward_speed = speeds[highway]
     result.backward_speed = speeds[highway]
+  elseif railway and railway_speeds[railway] then
+    -- special railway like funicular
+    result.forward_speed = railway_speeds[railway]
+    result.backward_speed = railway_speeds[railway]
   elseif access and access_tag_whitelist[access] then
       -- unknown way, but valid access tag
     result.forward_speed = walking_speed
