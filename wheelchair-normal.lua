@@ -109,6 +109,7 @@ function get_exceptions(vector)
 end
 
 function node_function (node, result)
+
   local wheelchair = node:get_value_by_key("wheelchair")
   local kerbheight = node:get_value_by_key("kerb:height")
   local kerbtype = node:get_value_by_key("kerb")
@@ -276,6 +277,9 @@ function way_function (way, result)
     return
   end
 
+  result.forward_mode = mode.walking
+  result.backward_mode = mode.walking
+
   local name = way:get_value_by_key("name")
   local footway_type = way:get_value_by_key("footway")
   local ref = way:get_value_by_key("ref")
@@ -317,12 +321,12 @@ function way_function (way, result)
   if route_speeds[route] then
     -- ferries (doesn't cover routes tagged using relations)
     result.ignore_in_grid = true
-  if duration and durationIsValid(duration) then
-    result.duration = math.max( 1, parseDuration(duration) )
-  else
-    result.forward_speed = route_speeds[route]
-    result.backward_speed = route_speeds[route]
-  end
+    if duration and durationIsValid(duration) then
+      result.duration = math.max( 1, parseDuration(duration) )
+    else
+      result.forward_speed = route_speeds[route]
+      result.backward_speed = route_speeds[route]
+    end
     result.forward_mode = mode_ferry
     result.backward_mode = mode_ferry
   elseif railway and platform_speeds[railway] then
