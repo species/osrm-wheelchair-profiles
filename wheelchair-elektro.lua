@@ -266,6 +266,9 @@ function way_function (way, result)
     return
   end
 
+  result.forward_mode = mode.walking
+  result.backward_mode = mode.walking
+
   local name = way:get_value_by_key("name")
   local footway_type = way:get_value_by_key("footway")
   local ref = way:get_value_by_key("ref")
