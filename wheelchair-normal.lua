@@ -15,7 +15,7 @@ restriction_exception_tags = { "foot" }
 walking_speed = 3 -- in km/h - but as speed is the rating criteria, total time is useless
 minwidth = 0.8 -- in m
 maxkerbheight = 0.03 -- in m
-maxincline = 3 -- in %;  explicitely tag ramps with wheelchair=yes!
+maxincline = 4 -- in %;  explicitely tag ramps with wheelchair=yes!
 maxincline_across = 6
 
 speeds = {
